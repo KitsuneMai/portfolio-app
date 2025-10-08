@@ -7,10 +7,13 @@ import Dashboard from "./pages/dashborad";
 import ProductsPage from "./pages/products_page";
 import SalesPage from "./pages/SalesPage";
 import SalesCharts from "./pages/SalesCharts";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
+      <Navbar/>
       <Routes>
         <Route path="/" element={<Login />} /> {/*temporalmente el login será la raíz */}
         <Route path="/register" element={<Register />} />
@@ -19,6 +22,7 @@ function App() {
         <Route path="/sales" element={<SalesPage/>} />
         <Route path="charts" element={<SalesCharts/>} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }

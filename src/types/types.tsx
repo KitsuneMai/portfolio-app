@@ -7,7 +7,8 @@ export type Product = {
   name: string;
   description?: string;
   basePrice: number;
-  ivaPercentage: number;
+  ivaPercentage?: number;
+  profitPercentage?: number,
   stock: number;
   imageUrl?: string;
   vehicleType: VehicleType;

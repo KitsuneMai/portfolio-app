@@ -91,9 +91,9 @@ const ProductsPage = () => {
           />
           <input
             type="number"
-            name="ivaPercentage"
-            placeholder="IVA %"
-            value={form.ivaPercentage || ''}
+            name="profitPercentage"
+            placeholder="Porcentaje de ganancia"
+            value={form.profitPercentage || ''}
             onChange={handleChange}
             className="p-2 border rounded"
           />

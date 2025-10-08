@@ -16,7 +16,7 @@ const SalesPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [saleItems, setSaleItems] = useState<SaleItemForm[]>([]);
   const [customerName, setCustomerName] = useState('');
-  const [totals, setTotals] = useState({ subtotal: 0, ivaTotal: 0, total: 0 });
+  const [totals, setTotals] = useState({ subtotal: 0, total: 0 });
 
   // Cargar productos
   useEffect(() => {
@@ -50,28 +50,28 @@ const SalesPage = () => {
     setSaleItems((prev) => prev.filter((item) => item.productId !== productId));
   };
 
-  // Calcular totales para preview
+  // Calcular totales para preview (sin IVA)
   useEffect(() => {
     let subtotal = 0;
-    let ivaTotal = 0;
     let total = 0;
 
     saleItems.forEach((item) => {
       const product = products.find((p) => p.id === item.productId);
       if (!product) return;
 
-      const price = product.basePrice;
-      const iva = product.ivaPercentage || 0;
-      const priceWithIva = price + price * (iva / 100);
+      const basePrice = Number(product.basePrice);
+      const profitPercentage = product.profitPercentage ?? 0;
 
-      subtotal += price * item.quantity;
-      ivaTotal += (priceWithIva - price) * item.quantity;
-      total += priceWithIva * item.quantity;
+      // Simular mismo cálculo que en el backend
+      const finalPrice =
+        profitPercentage > 0 ? basePrice * (1 + profitPercentage / 100) : basePrice;
+
+      subtotal += basePrice * item.quantity;
+      total += finalPrice * item.quantity;
     });
 
     setTotals({
       subtotal: +subtotal.toFixed(2),
-      ivaTotal: +ivaTotal.toFixed(2),
       total: +total.toFixed(2),
     });
   }, [saleItems, products]);
@@ -92,20 +92,19 @@ const SalesPage = () => {
     const body = { customerName, items: saleItems };
 
     try {
-        const res = await fetch('http://localhost:3000/sales', {
+      const res = await fetch('http://localhost:3000/sales', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         credentials: 'include', // envía la cookie JWT automáticamente
-        });
-
+      });
 
       if (!res.ok) throw new Error('Error creando venta');
 
       alert('Venta registrada con éxito!');
       setCustomerName('');
       setSaleItems([]);
-      setTotals({ subtotal: 0, ivaTotal: 0, total: 0 });
+      setTotals({ subtotal: 0, total: 0 });
     } catch (err) {
       console.error(err);
       alert('Ocurrió un error al registrar la venta');
@@ -144,13 +143,22 @@ const SalesPage = () => {
           {saleItems.length === 0 && <p>No hay productos agregados</p>}
           {saleItems.map((item) => {
             const product = products.find((p) => p.id === item.productId)!;
+            const profit = product.profitPercentage ?? 0;
+            const finalPrice =
+              profit > 0 ? product.basePrice * (1 + profit / 100) : product.basePrice;
+
             return (
               <div key={item.productId} className="flex items-center justify-between p-2 border-b">
                 <div className="flex-1">
                   <p className="font-semibold">{product.name}</p>
                   <p className="text-sm">
-                    Precio unitario: {currencyFormatter.format(product.basePrice)}
+                    Precio base: {currencyFormatter.format(product.basePrice)}
                   </p>
+                  {profit > 0 && (
+                    <p className="text-sm text-gray-600">
+                      +{profit}% ganancia → {currencyFormatter.format(finalPrice)}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -164,7 +172,7 @@ const SalesPage = () => {
                     className="w-16 p-1 border rounded text-center"
                   />
                   <span className="w-24 text-right">
-                    {currencyFormatter.format(product.basePrice * item.quantity)}
+                    {currencyFormatter.format(finalPrice * item.quantity)}
                   </span>
                   <button
                     type="button"
@@ -181,7 +189,6 @@ const SalesPage = () => {
 
         <div className="mt-4 p-4 border rounded bg-gray-50 space-y-1">
           <p>Subtotal: {currencyFormatter.format(totals.subtotal)}</p>
-          <p>IVA: {currencyFormatter.format(totals.ivaTotal)}</p>
           <p className="font-bold text-lg">Total: {currencyFormatter.format(totals.total)}</p>
         </div>
 
