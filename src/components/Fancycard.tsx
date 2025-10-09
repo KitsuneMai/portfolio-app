@@ -9,7 +9,11 @@ interface FancyCardProps {
     return (
       <div className="relative group w-full max-w-4xl mx-auto mt-10">
         {/* Fondo desplazado */}
-        <div className="absolute -top-5 right-8 w-full h-full rounded-lg bg-light-pink group-hover:bg-secondary-hover dark:bg-gray-300 dark:group-hover:bg-secondary-hover transition-all duration-300 group-hover:translate-x-[60px] translate-x-0 z-0" />
+        <div className="absolute -top-5 right-8 w-full h-full rounded-lg 
+             bg-gray-700  /* color gris inicial */
+             group-hover:bg-red-800 /* rojo más oscuro al hover */
+             transition-all duration-300 
+             group-hover:translate-x-[60px] translate-x-0 z-0" />
   
         {/* Tarjeta principal con efecto de zoom */}
         <a

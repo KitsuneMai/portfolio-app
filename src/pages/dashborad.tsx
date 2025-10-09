@@ -16,20 +16,20 @@ export default function Dashboard() {
 
 
       {/* Tarjetas */}
-      <main className="max-w-7xl mx-auto px-6 mt-12 mb-12 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <main className="max-w-7xl mx-auto px-6 mt-12 mb-12 grid gap-24 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <FancyCard
           image="images/part1.jpg"
           title="Haz tu propio video presentando tus servicios"
           description="Crea un portafolio digital único donde muestres tu trabajo con video, imágenes y texto."
         />
         <FancyCard
-          image="https://source.unsplash.com/600x400/?qrcode,red"
+          image="/images/cadena.jpg"
           title="Expande tu negocio fácilmente con un código QR"
           description="Genera un QR único que conecta clientes directamente con tu portafolio."
 
         />
         <FancyCard
-          image="https://source.unsplash.com/600x400/?business,red"
+          image="/images/imagen-freno.jpg"
           title="Comparte tu portafolio en segundos"
           description="Envía tu link o QR y permite que tus clientes accedan de forma rápida y sencilla."
         />
