@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Product } from '../types/types';
+import type { Product } from '../../types/types';
 
 type SaleItemForm = {
   productId: number;

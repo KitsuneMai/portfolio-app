@@ -1,35 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+
+interface ProductMetric {
+  productId: number;
+  productName: string;
+  totalSoldQty: number;
+  totalRevenue: number;
+  totalCost: number;
+  totalProfit: number;
+  avgProfitMargin: number;
+}
 
 export default function ProductMetrics() {
-  const [data, setData] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<ProductMetric[]>([]);
 
   useEffect(() => {
-    setData([
-      { product: 'Producto A', qtySold: 30, revenue: 1500, profit: 450 },
-      { product: 'Producto B', qtySold: 10, revenue: 1000, profit: 300 },
-      { product: 'Producto C', qtySold: 20, revenue: 500, profit: 150 },
-    ]);
+    fetch("http://localhost:3000/sales/metrics")
+      .then(res => res.json())
+      .then(res => setMetrics(res.productMetrics))
+      .catch(err => console.error(err));
   }, []);
 
   return (
-    <div className="overflow-x-auto bg-gray-800 rounded shadow-md p-4">
-      <h2 className="text-xl font-semibold mb-2">Ventas por Producto</h2>
-      <table className="min-w-full text-left text-gray-300">
-        <thead className="border-b border-gray-600">
-          <tr>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-x-auto">
+      <h2 className="text-xl font-bold mb-4">Métricas por Producto</h2>
+      <table className="min-w-full table-auto border-collapse">
+        <thead>
+          <tr className="bg-gray-700 text-left">
             <th className="px-4 py-2">Producto</th>
-            <th className="px-4 py-2">Cantidad Vendida</th>
+            <th className="px-4 py-2">Vendidos</th>
             <th className="px-4 py-2">Ingresos</th>
+            <th className="px-4 py-2">Costo</th>
             <th className="px-4 py-2">Ganancia</th>
+            <th className="px-4 py-2">Margen</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((item, i) => (
-            <tr key={i} className="border-b border-gray-700">
-              <td className="px-4 py-2">{item.product}</td>
-              <td className="px-4 py-2">{item.qtySold}</td>
-              <td className="px-4 py-2">${item.revenue}</td>
-              <td className="px-4 py-2">${item.profit}</td>
+          {metrics.map(p => (
+            <tr key={p.productId} className="even:bg-gray-700 odd:bg-gray-600">
+              <td className="px-4 py-2">{p.productName}</td>
+              <td className="px-4 py-2">{p.totalSoldQty}</td>
+              <td className="px-4 py-2">${p.totalRevenue.toFixed(2)}</td>
+              <td className="px-4 py-2">${p.totalCost.toFixed(2)}</td>
+              <td className="px-4 py-2">${p.totalProfit.toFixed(2)}</td>
+              <td className="px-4 py-2">{(p.avgProfitMargin * 100).toFixed(1)}%</td>
             </tr>
           ))}
         </tbody>

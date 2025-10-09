@@ -1,46 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+
+interface PurchaseMetric {
+  productId: string;
+  avgPrice: number;
+  totalQuantity: number;
+}
 
 export default function PurchasesTable() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<PurchaseMetric[]>([]);
+  const [totals, setTotals] = useState({ totalSpent: 0, totalStockAdded: 0 });
 
   useEffect(() => {
-    setData([
-      { product: 'Producto A', qty: 10, price: 50 },
-      { product: 'Producto B', qty: 5, price: 100 },
-      { product: 'Producto C', qty: 20, price: 25 },
-    ]);
+    fetch("http://localhost:3000/purchases/metrics")
+      .then(res => res.json())
+      .then(res => {
+        setData(res.profitability);
+        setTotals({ totalSpent: res.totalSpent, totalStockAdded: res.totalStockAdded });
+      })
+      .catch(err => console.error(err));
   }, []);
 
-  const totalSpent = data.reduce((sum, item) => sum + item.qty * item.price, 0);
-
   return (
-    <div className="overflow-x-auto bg-gray-800 rounded shadow-md p-4">
-      <h2 className="text-xl font-semibold mb-2">Compras Recientes</h2>
-      <table className="min-w-full text-left text-gray-300">
-        <thead className="border-b border-gray-600">
-          <tr>
-            <th className="px-4 py-2">Producto</th>
-            <th className="px-4 py-2">Cantidad</th>
-            <th className="px-4 py-2">Precio Unitario</th>
-            <th className="px-4 py-2">Total</th>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-x-auto">
+      <h2 className="text-xl font-bold mb-4">Compras y Stock</h2>
+      <div className="mb-4 text-green-400">
+        <span className="mr-6">Total Gastado: ${totals.totalSpent.toFixed(2)}</span>
+        <span>Total Stock Añadido: {totals.totalStockAdded}</span>
+      </div>
+      <table className="min-w-full table-auto border-collapse">
+        <thead>
+          <tr className="bg-gray-700 text-left">
+            <th className="px-4 py-2">Producto ID</th>
+            <th className="px-4 py-2">Precio Promedio</th>
+            <th className="px-4 py-2">Cantidad Total</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((item, i) => (
-            <tr key={i} className="border-b border-gray-700">
-              <td className="px-4 py-2">{item.product}</td>
-              <td className="px-4 py-2">{item.qty}</td>
-              <td className="px-4 py-2">${item.price}</td>
-              <td className="px-4 py-2">${item.qty * item.price}</td>
+          {data.map(p => (
+            <tr key={p.productId} className="even:bg-gray-700 odd:bg-gray-600">
+              <td className="px-4 py-2">{p.productId}</td>
+              <td className="px-4 py-2">${p.avgPrice.toFixed(2)}</td>
+              <td className="px-4 py-2">{p.totalQuantity}</td>
             </tr>
           ))}
         </tbody>
-        <tfoot>
-          <tr>
-            <td className="px-4 py-2 font-bold" colSpan={3}>Total Gastado</td>
-            <td className="px-4 py-2 font-bold">${totalSpent}</td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   );

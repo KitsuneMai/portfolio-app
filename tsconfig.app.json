@@ -6,6 +6,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -14,6 +15,14 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+
+    "types": ["node"],
+
+    /* Alias config 👇 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
 
     /* Linting */
     "strict": true,

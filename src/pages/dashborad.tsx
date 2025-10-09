@@ -5,7 +5,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screenf flex flex-col bg-gray-900 text-white">
       {/* Imagen hero */}
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden relative z-0">
         <img
           src="/images/bike.jpg"
           alt="Hero"

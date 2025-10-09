@@ -1,6 +1,6 @@
-import SalesChart from '../components/metrics/SalesChart';
-import ProductMetrics from '../components/metrics/ProductMetrics';
-import PurchasesTable from '../components/metrics/PurchasesTable';
+import SalesChart from '../../components/metrics/SalesChart';
+import ProductMetrics from '../../components/metrics/ProductMetrics';
+import PurchasesTable from '../../components/metrics/PurchasesTable';
 
 export default function DashboardMetrics() {
   return (

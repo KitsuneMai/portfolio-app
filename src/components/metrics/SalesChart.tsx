@@ -1,28 +1,42 @@
-import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+
+interface MonthlyRevenue {
+  month: string;
+  revenue: number;
+}
 
 export default function SalesChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<MonthlyRevenue[]>([]);
 
   useEffect(() => {
-    // mock data mientras conectamos backend
-    setData([
-      { month: '2025-01', revenue: 5000 },
-      { month: '2025-02', revenue: 7000 },
-      { month: '2025-03', revenue: 6500 },
-      { month: '2025-04', revenue: 8000 },
-    ]);
+    fetch("http://localhost:3000/sales/metrics")
+      .then(res => res.json())
+      .then(res => {
+        // Aseguramos que res.monthlyRevenue es un Record<string, number>
+        const monthlyRevenue = res.monthlyRevenue as Record<string, number>;
+
+        const revenueData = Object.entries(monthlyRevenue).map(([month, revenue]) => ({
+          month,
+          revenue: Number(revenue), // convertimos a número
+        }));
+
+        setData(revenueData);
+      })
+      .catch(err => console.error(err));
   }, []);
 
+
   return (
-    <div className="bg-gray-800 p-4 rounded shadow-md h-64">
-      <h2 className="text-xl font-semibold mb-2">Crecimiento Mensual</h2>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 className="text-xl font-bold mb-4">Ingresos Mensuales</h2>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
-          <XAxis dataKey="month" stroke="#ccc" />
-          <YAxis stroke="#ccc" />
-          <Tooltip />
-          <Line type="monotone" dataKey="revenue" stroke="#fff" strokeWidth={2} />
+          <CartesianGrid stroke="#555" strokeDasharray="5 5" />
+          <XAxis dataKey="month" stroke="#fff" />
+          <YAxis stroke="#fff" />
+          <Tooltip formatter={(value: number) => `$${value}`} />
+          <Line type="monotone" dataKey="revenue" stroke="#4ade80" strokeWidth={3} />
         </LineChart>
       </ResponsiveContainer>
     </div>
