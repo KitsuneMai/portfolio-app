@@ -122,7 +122,6 @@ const Navbar: React.FC = () => {
       </ul>
 
       {/* Icono de perfil / dropdown */}
-      {/* Icono de perfil / dropdown */}
       <div className="relative z-10">
         <button
           ref={buttonRef}
@@ -147,7 +146,7 @@ const Navbar: React.FC = () => {
               {user ? (
                 <>
                   <a
-                    href="/panel"
+                    href="/panel/dashboardcharts"
                     className="block px-4 py-2 hover:bg-gray-700 transition"
                   >
                     Panel de Control

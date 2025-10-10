@@ -13,18 +13,27 @@ export default function SalesChart() {
     fetch("http://localhost:3000/sales/metrics")
       .then(res => res.json())
       .then(res => {
-        // Aseguramos que res.monthlyRevenue es un Record<string, number>
-        const monthlyRevenue = res.monthlyRevenue as Record<string, number>;
+        // Obtenemos los datos o usamos un objeto vacío
+        const monthlyRevenue = (res.monthlyRevenue || {}) as Record<string, number>;
 
-        const revenueData = Object.entries(monthlyRevenue).map(([month, revenue]) => ({
+        // Lista fija de meses en español o inglés
+        const months = [
+          "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        // Creamos un array asegurando que cada mes tenga un valor
+        const revenueData = months.map((month, index) => ({
           month,
-          revenue: Number(revenue), // convertimos a número
+          revenue: Number(monthlyRevenue[index + 1] || 0), // si tu backend devuelve {1: 1000, 2: 500, ...}
         }));
 
         setData(revenueData);
       })
       .catch(err => console.error(err));
   }, []);
+
+
 
 
   return (
